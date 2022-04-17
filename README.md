@@ -11,7 +11,7 @@ This is a multithreaded music downloader. These are the steps it takes:
 ## Install
 Dependencies:
 ```
-pip install python-musicbrainzngs
+pip install musicbrainzngs
 youtube-dl
 ```
 
