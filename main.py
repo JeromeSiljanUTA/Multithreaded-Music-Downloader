@@ -43,12 +43,21 @@ def add_tracks(title_num, discography, input_artist, album_list):
 
 discography = []
 
-def ytdl(args):
+def ytdl(song_name):
+    args = input_artist + ' ' + song_name
     cmd = 'youtube-dl --extract-audio --audio-format mp3 --add-metadata --output "'
     cmd += str(file_dest.file_path)
-    cmd += '/%(title)s.%(ext)s" "ytsearch:'
+    cmd += '/' + song_name 
+    cmd += '.%(ext)s" "ytsearch:'
     cmd += args + ' audio"'
     os.system(cmd)
+    cmd = 'id3v2 --artist "'
+    cmd += input_artist + '" --song "'
+    cmd += song_name + '"'
+    cmd += ' "' + str(file_dest.file_path)
+    cmd += '/' + song_name + '.mp3"'
+    os.system(cmd)
+
 
 for num in range(len(album_list)):
     add_tracks(num, discography, input_artist, album_list)
@@ -56,5 +65,5 @@ for num in range(len(album_list)):
 executor = ThreadPoolExecutor(max_workers=4)
 for album in discography:
     for song in album:
-        song_args = input_artist + ' ' + song
-        executor.submit(ytdl, args=song_args)
+        #song_args = input_artist + ' ' + song
+        executor.submit(ytdl, song_name=song)
