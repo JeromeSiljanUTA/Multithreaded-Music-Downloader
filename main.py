@@ -6,10 +6,13 @@ import os
 import musicbrainzngs
 from concurrent.futures import ThreadPoolExecutor
 
-parser = argparse.ArgumentParser()
-parser.add_argument("file_path", type=Path)
-
-file_dest = parser.parse_args()
+try:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file_path", type=Path)
+    file_dest = parser.parse_args()
+except:
+    print('\nUsage: python main.py <destination>')
+    exit()
 
 musicbrainzngs.set_useragent("Jerome's Music Scraper", "0.1", "jerome.siljan@mavs.uta.edu")
 
