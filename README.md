@@ -16,8 +16,9 @@ youtube-dl
 ```
 
 ## Run 
-```
-python main.py <destination>
-```
+`python main.py <destination> <number of threads>`
+
+Example run:
+`python main.py ~/Music 4`
 
 *I will add more documentation later*

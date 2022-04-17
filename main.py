@@ -9,9 +9,13 @@ from concurrent.futures import ThreadPoolExecutor
 try:
     parser = argparse.ArgumentParser()
     parser.add_argument("file_path", type=Path)
-    file_dest = parser.parse_args()
+    parser.add_argument("integers", type=int)
+    args = parser.parse_args()
+    file_dest = args.file_path
+    num_threads = args.integers
 except:
-    print('\nUsage: python main.py <destination>')
+    print('\nUsage: python main.py <destination> <number of threads>')
+    print('Recommended number of threads to use is 4')
     exit()
 
 musicbrainzngs.set_useragent("Jerome's Music Scraper", "0.1", "jerome.siljan@mavs.uta.edu")
@@ -31,22 +35,19 @@ for release_group in raw_releases["artist"]["release-group-list"]:
     album_list.append(release_group["title"])
 
 def add_tracks(title_num, discography, input_artist, album_list):
-    #print("Tracks in " + album_list[title_num] + ":")
     discography.append([album_list[title_num]])
     album_id = (musicbrainzngs.search_releases(artist=input_artist, release=album_list[title_num], limit=1))["release-list"][0]["id"]
     raw_tracks_list = musicbrainzngs.get_release_by_id(album_id, includes=["recordings"])
     tracks_list = (raw_tracks_list["release"]["medium-list"][0]["track-list"])
     for track in tracks_list:
-        #print("\t" + track["recording"]["title"])
         discography[title_num].append(track["recording"]["title"])
-    #print(discography[title_num])
 
 discography = []
 
 def ytdl(song_name):
     args = input_artist + ' ' + song_name
     cmd = 'youtube-dl --extract-audio --audio-format mp3 --add-metadata --output "'
-    cmd += str(file_dest.file_path)
+    cmd += str(file_dest)
     cmd += '/' + song_name 
     cmd += '.%(ext)s" "ytsearch:'
     cmd += args + ' audio"'
@@ -54,7 +55,7 @@ def ytdl(song_name):
     cmd = 'id3v2 --artist "'
     cmd += input_artist + '" --song "'
     cmd += song_name + '"'
-    cmd += ' "' + str(file_dest.file_path)
+    cmd += ' "' + str(file_dest)
     cmd += '/' + song_name + '.mp3"'
     os.system(cmd)
 
@@ -62,8 +63,7 @@ def ytdl(song_name):
 for num in range(len(album_list)):
     add_tracks(num, discography, input_artist, album_list)
 
-executor = ThreadPoolExecutor(max_workers=4)
+executor = ThreadPoolExecutor(max_workers=num_threads)
 for album in discography:
     for song in album:
-        #song_args = input_artist + ' ' + song
         executor.submit(ytdl, song_name=song)
