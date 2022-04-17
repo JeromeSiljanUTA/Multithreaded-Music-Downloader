@@ -17,7 +17,7 @@ youtube-dl
 
 ## Run 
 ```
-python main.py
+python main.py <destination>
 ```
 
 *I will add more documentation later*
