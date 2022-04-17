@@ -1,21 +1,25 @@
+import argparse
+from pathlib import Path
 import threading
 import time
 import os
 import musicbrainzngs
 from concurrent.futures import ThreadPoolExecutor
 
+parser = argparse.ArgumentParser()
+parser.add_argument("file_path", type=Path)
+
+file_dest = parser.parse_args()
+
 musicbrainzngs.set_useragent("Jerome's Music Scraper", "0.1", "jerome.siljan@mavs.uta.edu")
 
 input_artist = input("Which artist are you looking for? ")
-#input_artist = "Maluma"
 
 artist_id = musicbrainzngs.search_artists(input_artist)["artist-list"][0]["id"]
 
 
 raw_releases = musicbrainzngs.get_artist_by_id(artist_id, 
         includes=["release-groups"], release_type=["album", "ep"])
-
-#print("Albums:")
 
 album_list = []
 album_list_id = []
@@ -37,32 +41,17 @@ def add_tracks(title_num, discography, input_artist, album_list):
 discography = []
 
 def ytdl(args):
-    cmd = 'youtube-dl --extract-audio --audio-format mp3 --add-metadata "ytsearch:'
+    cmd = 'youtube-dl --extract-audio --audio-format mp3 --add-metadata --output "'
+    cmd += str(file_dest.file_path)
+    cmd += '/%(title)s.%(ext)s" "ytsearch:'
     cmd += args + ' audio"'
     os.system(cmd)
 
 for num in range(len(album_list)):
     add_tracks(num, discography, input_artist, album_list)
 
-#add_tracks(0, discography, input_artist, album_list)
-
 executor = ThreadPoolExecutor(max_workers=4)
 for album in discography:
     for song in album:
         song_args = input_artist + ' ' + song
         executor.submit(ytdl, args=song_args)
-
-
-
-"""
-def ytd(cmd):
-    os.system(cmd)
-
-for song in discography[0]:
-    cmd = 'youtube-dl --extract-audio --audio-format mp3 --add-metadata "ytsearch:'
-    args = input_artist + ' ' + song
-    cmd += args + ' audio"'
-    ytd(cmd)
-    a = threading.Thread(target=ytd, args=(cmd,))
-    a.start()
-    """
