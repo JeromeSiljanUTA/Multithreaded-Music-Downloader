@@ -13,6 +13,7 @@ Dependencies:
 ```
 pip install musicbrainzngs
 youtube-dl
+ffmpeg
 ```
 
 ## Run 
