@@ -31,8 +31,12 @@ raw_releases = musicbrainzngs.get_artist_by_id(artist_id,
 album_list = []
 album_list_id = []
 
+
 for release_group in raw_releases["artist"]["release-group-list"]:
     album_list.append(release_group["title"])
+
+print('album list')
+print(album_list)
 
 def add_tracks(title_num, discography, input_artist, album_list):
     discography.append([album_list[title_num]])
@@ -44,26 +48,32 @@ def add_tracks(title_num, discography, input_artist, album_list):
 
 discography = []
 
-def ytdl(song_name):
+def ytdl(song_name, album_name):
     args = input_artist + ' ' + song_name
-    cmd = 'youtube-dl --extract-audio --audio-format mp3 --add-metadata --output "'
+    cmd = 'youtube-dl --extract-audio --audio-format mp3 --output "'
     cmd += str(file_dest)
     cmd += '/' + song_name 
     cmd += '.%(ext)s" "ytsearch:'
     cmd += args + ' audio"'
     os.system(cmd)
     cmd = 'id3v2 --artist "'
-    cmd += input_artist + '" --song "'
+    cmd += input_artist + '" --album "'
+    cmd += album_name + '" --song "'
     cmd += song_name + '"'
     cmd += ' "' + str(file_dest)
     cmd += '/' + song_name + '.mp3"'
+    print(cmd)
     os.system(cmd)
 
 
 for num in range(len(album_list)):
     add_tracks(num, discography, input_artist, album_list)
 
+album_index_num = 0
 executor = ThreadPoolExecutor(max_workers=num_threads)
 for album in discography:
+    print()
     for song in album:
-        executor.submit(ytdl, song_name=song)
+        executor.submit(ytdl, song_name=song, album_name=album_list[album_index_num])
+
+    album_index_num += 1
