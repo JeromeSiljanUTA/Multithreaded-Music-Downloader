@@ -52,6 +52,7 @@ def ytdl(song_name, album_name):
     args = input_artist + ' ' + song_name
     cmd = 'youtube-dl --extract-audio --audio-format mp3 --output "'
     cmd += str(file_dest)
+    cmd += '/' + album_name + '/'
     cmd += '/' + song_name 
     cmd += '.%(ext)s" "ytsearch:'
     cmd += args + ' audio"'
@@ -61,8 +62,9 @@ def ytdl(song_name, album_name):
     cmd += album_name + '" --song "'
     cmd += song_name + '"'
     cmd += ' "' + str(file_dest)
-    cmd += '/' + song_name + '.mp3"'
-    print(cmd)
+    cmd += '/' + album_name + '/'
+    cmd += song_name + '.mp3"'
+    print('\n\n' + cmd + '\n\n')
     os.system(cmd)
 
 
@@ -72,7 +74,7 @@ for num in range(len(album_list)):
 album_index_num = 0
 executor = ThreadPoolExecutor(max_workers=num_threads)
 for album in discography:
-    print()
+    os.mkdir(str(file_dest) + '/' + str(album_list[album_index_num]))
     for song in album:
         executor.submit(ytdl, song_name=song, album_name=album_list[album_index_num])
 
