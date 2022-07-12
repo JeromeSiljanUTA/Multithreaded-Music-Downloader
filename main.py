@@ -64,7 +64,7 @@ def ytdl(song_name, album_name):
     cmd += ' "' + str(file_dest)
     cmd += '/' + album_name + '/'
     cmd += song_name + '.mp3"'
-    print('\n\n' + cmd + '\n\n')
+    #print('\n\n' + cmd + '\n\n')
     os.system(cmd)
 
 
