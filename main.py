@@ -65,7 +65,7 @@ def ytdl(song_name, album_name):
     os.system(cmd)
 
 
-print('\nType the numbers of the albums you want to download: ')
+print('Type the numbers of the albums you want to download: ')
 
 for num in range(len(album_list)):
     add_tracks(num, discography, input_artist, album_list)
