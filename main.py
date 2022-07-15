@@ -35,9 +35,6 @@ album_list_id = []
 for release_group in raw_releases["artist"]["release-group-list"]:
     album_list.append(release_group["title"])
 
-print('album list')
-print(album_list)
-
 def add_tracks(title_num, discography, input_artist, album_list):
     discography.append([album_list[title_num]])
     album_id = (musicbrainzngs.search_releases(artist=input_artist, release=album_list[title_num], limit=1))["release-list"][0]["id"]
@@ -68,14 +65,22 @@ def ytdl(song_name, album_name):
     os.system(cmd)
 
 
+print('\nType the numbers of the albums you want to download: ')
+
 for num in range(len(album_list)):
     add_tracks(num, discography, input_artist, album_list)
+    print(str(num) + '. ' + album_list[num])
+
+print('-----------------------------------------------------')
+desired_albums = input('>> ')
+arr_desired_albums = desired_albums.split()
 
 album_index_num = 0
 executor = ThreadPoolExecutor(max_workers=num_threads)
 for album in discography:
-    os.mkdir(str(file_dest) + '/' + str(album_list[album_index_num]))
-    for song in album:
-        executor.submit(ytdl, song_name=song, album_name=album_list[album_index_num])
+    if str(album_index_num) in arr_desired_albums:
+        os.mkdir(str(file_dest) + '/' + str(album_list[album_index_num]))
+        for song in album:
+            executor.submit(ytdl, song_name=song, album_name=album_list[album_index_num])
 
     album_index_num += 1
