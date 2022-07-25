@@ -47,7 +47,7 @@ discography = []
 
 def ytdl(song_name, album_name):
     args = input_artist + ' ' + song_name
-    cmd = 'youtube-dl --extract-audio --audio-format mp3 --output "'
+    cmd = 'youtube-dl --extract-audio --audio-format flac --output "'
     cmd += str(file_dest)
     cmd += '/' + album_name + '/'
     cmd += '/' + song_name 
@@ -60,7 +60,7 @@ def ytdl(song_name, album_name):
     cmd += song_name + '"'
     cmd += ' "' + str(file_dest)
     cmd += '/' + album_name + '/'
-    cmd += song_name + '.mp3"'
+    cmd += song_name + '.flac"'
     #print('\n\n' + cmd + '\n\n')
     os.system(cmd)
 
